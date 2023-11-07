@@ -1,0 +1,6 @@
+*.gz
+
+*.synctex.gz
+
+
+#.gitignore

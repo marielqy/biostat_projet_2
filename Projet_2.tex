@@ -1,0 +1,104 @@
+\documentclass[12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper, margin=1.27cm]{geometry}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{natbib}
+\usepackage{CJKutf8}
+%\usepackage[UTF8]{ctex}
+\usepackage{float}
+\usepackage{physics}
+\usepackage{listings}
+\usepackage{subfiles}
+\usepackage{blindtext}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage{fancyhdr}
+\usepackage{datetime2}
+\usepackage{times}
+
+\newcommand{\bracket}[1]{\left ( #1 \right )}
+\newcommand{\curly}[1]{\left \{ #1 \right \} }
+\newcommand{\squared}[1]{\left [ #1 \right ]}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{
+Wen, Zehai; Li, Qingyue $\tab[0.3cm]$ 20266957; 20269849 $\tab[0.3cm]$
+STT 6220 Méthodes d'analyse biostatistique}
+\rhead{\today}
+
+\rfoot{}
+\cfoot{\thepage}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Théorème}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Définition} 
+\newtheorem{definitions}[theorem]{Définitions} 
+\newtheorem{example}[theorem]{Exemple}
+\newtheorem{examples}[theorem]{Exemples}
+\newtheorem{remark}[theorem]{Remarque}
+\newtheorem{remarks}[theorem]{Remarques}
+\newtheorem{lemma}[theorem]{Lemme}
+\newtheorem{corollary}[theorem]{Corollaire}
+
+\title{Méthodes d'analyse biostatistique projet 2}
+\author{Wen, Zehai; Li, Qingyue }
+\date{\DTMnow}
+
+%CODING
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\maketitle
+
+\setcounter{tocdepth}{0}
+
+\subfile{Exercice 1a}
+\subfile{Exercice 1b}
+\subfile{Exercice 1c}
+\subfile{Exercice 1d}
+\subfile{Exercice 1e}
+\subfile{Exercice 2abcd}
+\subfile{Exercice 2e}
+\subfile{Exercice 3}
+
+\end{CJK*}
+\end{document}

@@ -1,0 +1,129 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\section*{Exercice 2abcd}
+Reprendre le jeu de données sur les limules disponible à partir du progiciel \texttt{rsq}
+en R. La variable de réponse est toujours le nombre de \texttt{num.satellites}.
+Premièrement, ajustez un modèle de régression de Poisson utilisant les variables 
+explicatives \texttt{color}, \texttt{spine}, et \texttt{width}. 
+Évaluez la sur-dispersion potentielle en faisant un test de sur-dispersion et en évaluant le paramètre de
+sur-dispersion. Discutez des résultats. Supposons que le test de sur-dispersion rejète l’hypothèse nulle. 
+Expliquez ce que rejetter cette hypothèse signifie, et suggérez une approche alternative sans analyse.
+
+Ensuite, choisissez et réalisez
+une cretière pour sélectionner le meilleur modèle parmi les modèles possibles utilisant les varaibles explicatives 
+\texttt{color}, \texttt{spine}, \texttt{width}, et \texttt{weight}. Présentez une analyse de résidus 
+et discutez les observations. 
+
+\paragraph{Solution}
+Tout d'abord, nous importons l'ensemble de données et examinons les informations de base sur les données.
+
+\begin{lstlisting}
+library(rsq)
+
+data("hcrabs")
+attach (hcrabs)
+
+\end{lstlisting}
+
+Ensuite,nous réalisons 
+un modèle de régression de Poisson avec la variable de réponse \texttt{num.satellites} 
+et les variables explicatives \texttt{color}, \texttt{spine}, et \texttt{width}.
+
+\begin{lstlisting}[language=R]
+modele_poisson <- 
+glm ( num.satellites ~ width + spine + color, family = poisson ( link = log ) ,
+data = hcrabs ) 
+\end{lstlisting}
+
+On fait puis le test de surdispersion et évaluer le paramèter de sur-dispersion.
+
+\begin{lstlisting}
+library (AER)
+print(dispersiontest(modele_poisson))
+\end{lstlisting}
+
+Le test donne que le paramètre de dispersion est $3.143975$ avec p-valeur $4.07e-08$.
+Par conséquent, la sur-dispersion est significative.
+Alors la dispersion observée dans les données 
+dépasse ce qui serait attendu sous une distribution de Poisson. 
+Dans notre cas, les variations du nombre de satellites mâles ne sont pas 
+bien prises en compte dans le modèle de Poisson standard et 
+des modèles de surdiscrétisation plus complexes peuvent être envisagés pour mieux s'adapter à ces données.
+Lorsque nous effectuons une régression de Poisson, nous supposons que la variance est égale à la moyenne, 
+une propriété inhérente à la distribution de Poisson. 
+Cependant, les données réelles peuvent ne pas toujours respecter cette supposition. 
+
+Comme on a une surdispersion, il faudrait avoir 
+une hétérogénéité non observée ou une accumulation de comptages issus de plusieurs processus indépendants.
+Face à la surdispersion, 
+on se tourne généralement vers d'autres modèles plus complexes pour les données de comptage. 
+Une choix est d'utilier un modèle mixte, qui s'appelle modèle binomial négatif. 
+Il s'agit de commencer avec un modèle de Poisson
+avec le paramètre estimé par une distribution de Gamma.
+
+Passons au sujet prochain, il y a $2 \times 4-1=15$ modèles possibles si on ne compte pas l'intercept.
+On choisit le critère AIC pour sélectionner le meilleur modèle.
+On rappelle que, si on a $k$ modèles qui ont les valeurs d'AIC $\text{AIC}_1$, $\cdots$, $\text{AIC}_k$ respectivement,
+les valeurs $\exp{-\frac{1}{2}(\text{AIC}_i - \text{AIC}_{min})}$ sont les probabilités que le modèle $i$
+minimisant la perte d'informations.
+
+\begin {lstlisting}[language=R]
+modele_color <- glm ( num.satellites ~ color, family = poisson ( link = log ) ,data = hcrabs ) 
+modele_spine <- glm ( num.satellites ~ spine, family = poisson ( link = log ) ,data = hcrabs )
+modele_width <- glm ( num.satellites ~ width, family = poisson ( link = log ) ,data = hcrabs )
+modele_weight <- glm ( num.satellites ~ weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_spine <- glm ( num.satellites ~ color + spine, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_width <- glm ( num.satellites ~ color + width, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_weight <- glm ( num.satellites ~ color + weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_spine_width <- glm ( num.satellites ~ spine + width, family = poisson ( link = log ) ,data = hcrabs )
+modele_spine_weight <- glm ( num.satellites ~ spine + weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_width_weight <- glm ( num.satellites ~ width + weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_spine_width <- glm ( num.satellites ~ color + spine + width, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_spine_weight <- glm ( num.satellites ~ color + spine + weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_width_weight <- glm ( num.satellites ~ color + width + weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_spine_width_weight <- glm ( num.satellites ~ spine + width + weight, family = poisson ( link = log ) ,data = hcrabs )
+modele_color_spine_width_weight <- glm ( num.satellites ~ color + spine + width + weight, family = poisson ( link = log ) ,data = hcrabs )
+
+modeles <- list(modele_color, modele_spine, modele_width, modele_weight, 
+modele_color_spine, modele_color_width, modele_color_weight, modele_spine_width, 
+modele_spine_weight, modele_width_weight, modele_color_spine_width, 
+modele_color_spine_weight, modele_color_width_weight, 
+modele_spine_width_weight, modele_color_spine_width_weight)
+
+AICs <- rep(0, 15)
+for (i in 1:15) {
+  AICs[i] <- AIC(modeles[[i]])
+}
+
+print(AICs)
+
+min_AIC <- min(AICs)
+proba <- rep(0, 15)
+for (i in 1:15) {
+  proba[i] <- exp(0.5*(min_AIC- AICs[i]))
+}
+
+print(proba)
+
+print(which.max(proba))
+
+\end{lstlisting}
+
+À la fin, on trouve que le modèle color-weight est le meilleur modèle.
+Pour le résidus, on choisit les résidus d'Anscombe. 
+Les résidus d'Anscombe sont spécifiquement conçus pour 
+les modèles linéaires généralisés et 
+offrent de bonnes propriétés pour identifier des valeurs atypiques ou des observations influentes. 
+Ce lien \url{https://www.sfu.ca/sasdoc/sashtml/insight/chap39/sect57.htm} 
+fournit des informations supplémentaires sur les résidus d'Anscombe.
+
+\begin {lstlisting}[language=R]
+  library(surveillance)
+  plot(anscombe.residuals(modele_color_weight, phi =1))
+\end{lstlisting}
+
+Toutes les modélisations sont complètes.////
+\end{CJK*}
+\end{document}

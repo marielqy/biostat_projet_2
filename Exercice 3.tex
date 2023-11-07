@@ -1,0 +1,174 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\section*{Exercice 3}
+On s’intéresse à l’ensemble de variables suivantes: \texttt{age}, \texttt{sex}, \texttt{SES}, \texttt{smoking} et
+\texttt{weight}, notant que les variables \texttt{ID} et \texttt{time discrete} représentent respectivement l’identifiant
+de l’individu et le temps (il y a quatre temps: vague 1, 2, 3 ou 4) dans le jeu de données \texttt{addhealth long}.
+
+Proposez une structure de corrélations entre les mesures de poids de chaque individu.
+Ensuite, réalisez et comparez les trois modèles suivants utilisant la corrélation résiduelle :
+
+\begin{enumerate}
+    \item Un modèle de régression linéaire pour la variable dépendente \texttt{weight} sans aucune variable explicative,
+    c'est-à-dire just une ordonnée à l'origine.
+    \item Un modèle de régression linéaire pour la variable dépendente \texttt{weight} et les variables explicatives
+    \texttt{age} et \texttt{sex}.
+    \item Un modèle de régression linéaire pour la variable dépendente \texttt{weight} et les variables explicatives
+    \texttt{age}, \texttt{sex}, \texttt{SES} et \texttt{smoking}.
+\end{enumerate}
+
+Finalement, afin d'étudier la rélation entre la variable dépendent \texttt{weight} et la variable explicative \texttt{SES},
+on propose quatre modèles suivants:
+
+\begin{enumerate}
+    \item Un modèle linéaire en assumant l'indépendance entre toutes les observations.
+    \item Un modèle linéaire généralisé (normale) où on assume une matrice de corrélation interchangeable.
+    \item GEE avec une matrice de corrélation interchangeable.
+    \item Un modèle mixte avec une ordonnée à l'origine et une pente aléatoire pour chaque individu.
+\end{enumerate}
+
+Comparez les quatre modèles utilisant la variance de la coefficient de la variable continue \texttt{SES},
+pour laquelle faisez un intervalle de confiance.
+
+\paragraph{Solution}
+
+Parmi les quatres stuctures mentionnés en classe, on décide que la matrice de corrélation 
+est celui de Toepliz. On ne choisit pas les trois autres parce que les poids d'un individu 
+entre les points différents de temps ne sont pas indépendents ou interchangeable et que l'on 
+croit pas les poids forment une chaîne de Markov. On choisit Toepliz parce qu'il y a une « délai »
+entre les observations et que nous n'avons pas trouvé une autre matrice de corrélation en ligne 
+qui semble plus appropriée.
+
+D'abord, on réalise les trois modèles linéaires :
+
+\begin{enumerate}
+    \item Le modèle avec seulement une ordonnée à l'origine :
+
+\begin{lstlisting}
+    modeles_lineaires_aucune <- list()
+    residues_aucune <- rep(1,4)
+    for (i in 1:4){
+        modele_i <- lm(donnee_separe[[i]]$weight ~ 1)
+        modeles_lineaires_aucune <- append(modeles_lineaires_aucune, modele_i)
+        residues_aucune[i] <- mean(residuals(modele_i))
+    }
+\end{lstlisting}
+
+    \item Le modèle avec \texttt{age} et \texttt{sex} comme variables explicatives :
+
+\begin{lstlisting}
+    modeles_lineaires_age_sex <- list()
+    residues_age_sex <- rep(1,4)
+    for (i in 1:4){
+        modele_i <- lm(donnee_separe[[i]]$weight ~ donnee_separe[[i]]$age + donnee_separe[[i]]$sex)
+        modeles_lineaires_age_sex <- append(modeles_lineaires_age_sex, modele_i)
+        residues_age_sex[i] <- mean(residuals(modele_i))
+    }
+\end{lstlisting}
+
+    \item Le modèle avec \texttt{age}, \texttt{sex}, \texttt{SES} et \texttt{smoking} comme variables explicatives : 
+
+\begin{lstlisting}
+    modeles_lineaires_age_SES_sex_smoking <- list()
+    residues_age_SES_sex_smoking <- rep(1,4)
+    for (i in 1:4){
+        modele_i <- lm(donnee_separe[[i]]$weight ~ donnee_separe[[i]]$age + donnee_separe[[i]]$sex + 
+    donnee_separe[[i]]$SES + donnee_separe[[i]]$smoking)
+        modeles_lineaires_age_SES_sex_smoking <- append(
+    modeles_lineaires_age_SES_sex_smoking,  modele_i)
+        residues_age_SES_sex_smoking[i] <- mean(residuals(modele_i))
+    }
+    \end{lstlisting}   
+\end{enumerate}
+
+On imprime puis les corrélations résiduelles :
+
+\begin{lstlisting}
+    print("Les correlations residuelles sont :")
+    print(cor(residues_aucune, residues_age_sex)) # -0.5644551
+    print(cor(residues_age_sex, residues_age_SES_sex_smoking)) # -0.9982123
+    print(cor(residues_age_SES_sex_smoking, residues_aucune)) # 0.5159088
+\end{lstlisting}
+
+\begin{itemize}
+    \item \(-0.5644551\): 
+Cette valeur représente la corrélation entre les résidus du premier modèle  et ceux du deuxième modèle 
+(avec \textit{age} et \textit{sex} comme variables explicatives). 
+Cette corrélation négative signifie que lorsque les résidus du premier modèle augmentent, 
+ceux du deuxième modèle ont tendance à diminuer, et vice versa.
+    
+    \item \(-0.9982123\): 
+Cette valeur représente la corrélation entre les résidus du deuxième modèle et 
+ceux du troisième modèle. Cette corrélation, très proche de $-1$, 
+indique une forte relation négative entre les résidus des deux modèles. 
+Cela signifie que lorsque les résidus du deuxième modèle augmentent, 
+ceux du troisième modèle ont tendance à diminuer, et vice versa.
+    
+    \item \(0.5159088\): 
+Cette valeur représente la corrélation entre les résidus du troisième modèle et ceux du premier modèle. 
+Cette corrélation positive signifie que lorsque les résidus du troisième modèle augmentent, 
+ceux du premier modèle ont également tendance à augmenter, et vice versa.
+\end{itemize}
+   
+À partir de maintenant, on utilise \texttt{SES} comme une variable explicative pour la variable de réponse \texttt{weight}.
+Les modèles démandés sont réalisés ci-dessous :
+
+\begin{enumerate}
+    \item Modèle linéaire en assumant l'indépendance entre toutes les observations:
+
+\begin{lstlisting}
+    modele_lineaire <- lm(weight ~ SES, data = donnee)
+    print(summary(modele_lineaire))  
+\end{lstlisting}
+
+On trouve que l'écat type d'erreur pour \texttt{SES} est $0.1328$.
+    \item Modèle linéaire généralisé (normale) où on assume une matrice de corrélation interchangeable:
+
+\begin{lstlisting}
+    library(nlme)
+    glm_normal <- gls(weight ~ SES, data = donnee, correlation = corCompSymm(form = ~ 1 | SES))
+    print(summary(glm_normal)) 
+\end{lstlisting}
+
+On trouve que l'écat type d'erreur pour \texttt{SES} est $0.1868304$.
+    \item GEE avec une matrice de corrélation interchangeable:
+    
+\begin{lstlisting}
+    require(geepack)
+    GEE <- summary(geese(weight ~ SES, id = ID, data = donnee, corstr = 'exchangeable'))
+    print(GEE) 
+\end{lstlisting}
+On trouve que l'écat type d'erreur pour \texttt{SES} est $0.1646921$.
+
+    \item Modèle mixte avec une ordonnée à l'origine et une pente aléatoire pour chaque individu:
+\begin{lstlisting}
+    library(lme4)
+    modele_mixte <- lmer(weight ~ (1 + SES | ID), data = donnee)
+    print(summary(modele_mixte)) 
+    print(confint(modele_lineaire))
+\end{lstlisting}
+Nous avons manipulé beaucoup d'options. Ce modèle ne converge jamais. 
+\end{enumerate}
+
+On sait que des erreurs standard plus petites impliquent 
+des estimations plus précises des paramètres du modèle, 
+tandis que des erreurs standard plus grandes indiquent une plus grande incertitude. 
+Ainsi, parmi les quatre modèles mentionnés ci-dessus, 
+le permier modèle présente l'erreur standard la plus faible ($0.1328$).
+Par conséquent, le premier modèle est le meilleur modèle pour les données.
+On puis construire le $95 \%$ intervalle de confiance :
+
+\begin{lstlisting}
+    print(confint(modele_lineaire))
+\end{lstlisting}
+
+L'intervalle pour l'ordonnée à l'origine est $[161.6002042, 165.2151458]$
+et l'intervalle pour la pente est $[-0.6829711, -0.1625338]$.
+Donc, en général, on peut dire que le poids diminue lorsque \texttt{SES} augmente. ////
+
+\end{CJK*}
+\end{document}
+
+
