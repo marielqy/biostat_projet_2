@@ -3,18 +3,21 @@
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
 \section*{Exercice 1}
+Décrivez brièvement les variables du jeu de données 
+\texttt{diabetic} dans la bibliothèque \texttt{survival} en R.
+Quelle était une question de recherche menant à cette collecte de données?
+Produisez un graphique de Kaplan-Meier utilisant l'échantillon entier,
+le groupe de \texttt{trt = 0} et le groupe de \texttt{trt = 1} 
+pour le temps jusqu'à devenir aveugle.
+Pour le groupe \texttt{trt = 0}, trouvez le temps médian de survie et
+construisez un intervalle de confiance à $95\%$ pour le temps médian de survie.
+Faites un test de Log-Rang pour comparer les deux groupes.
 
-
-
-Pour le jeu de données 
-\texttt{rotterdam} dans la bibliothèque \texttt{survival} en R, 
-on s'intéresse par l'association entre les variables explicatives \texttt{age}, \texttt{meno}, 
-\texttt{sizes}, \texttt{grade}, \texttt{notes} et \texttt{chemo},
-et la variable de réponse le temps jusqu'à une récidive du cancer au sein.
-Ajustez un modèle de Cox pour cela et rapporter 
-les rapports de risque pour toutes les variables explicatives avec leurs intervalles de confiance (à $95\%$ ?).
-Nommez l'hypothèse importante du modèle de Cox. 
-Expliquez sans le faire comment on peut vérifier cette hypothèse.
+Finalement, on se demande si d'autres variables
+dans le jeu de données pourraient être des facteurs confondants, et si l'on devrait stratifier le
+test du Log-Rang sur l'une de ces variables. À partir de statistiques descriptives, de graphiques
+et/ou d'arguments adaptés au contexte de l'étude, discuter de laquelle des variables du jeu de
+données risque d'agir comme facteur confondant, et reproduire le test du Log-Rank stratifié pour cette variable.
 
 \paragraph{Solution}
 Tout d'abord, nous importons l'ensemble de données et examinons les informations de base sur les données.
