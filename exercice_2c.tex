@@ -11,152 +11,27 @@ inconvénients. Cette réponse devrait consister en environ $8$ à $12$ lignes m
 
 \smallskip
 \paragraph{Solution}
-On fait les hypothèses suivantes:
 
-\begin{enumerate}
-    \item La règle de décision est moindre carrés.
-    \item Seulement pour le calcul des variances, on suppose que $Y_1$ a distribution $N(0, \sigma^2)$.
-\end{enumerate}
+Écrire $h_i(t_j)$ pour le hasard de patient $i$ au temps d'échec $t_j$.
+Si l'hypothèse de proportionnalité est vraie,
+on peut écrire $h_i(t_j) = h_0(t_j) \psi_i = h_0(t_j) e^{z_i \beta}$
+où $h_0$ est le hasard de référence, $z_i \in \{0, 1\}$ selon 
+si le patient $i$ est dans le groupe de traitement ou le groupe de contrôle
+et $\beta$ est le paramètre à estimer. 
+La vraisemblance partielle est définie par 
+$L(\beta) = \prod_{k=1}^D \frac{\psi_i}{\sum_{l \in R_k} \psi_l} $
+où $D$ est le nombre d'échecs et $R_k$ est l'ensemble des patients à risque au temps $t_k$.
+On teste l'hypothèse nulle $H_0 : \beta = 0$.
+Fixer un niveau $\alpha \in (0, \frac{1}{2})$.
+Écrire $l = \ln (L)$, $S = l'$, $I = - l''$ et soit $\hat{\beta} \in \argmax_{\beta} L(\beta)$.
+Le test de Wald rejette $H_0$ si $\abs{\hat{\beta} \sqrt{I(\hat{\beta})} } > z_{\frac{\alpha}{2}}$.
+Le test du score rejette $H_0$ si $\abs{\frac{S(0)}{\sqrt{I(0)}}} > z_{\frac{\alpha}{2}}$.
+Le test du ratio vraisemblance rejette $H_0$ si $\abs{2(l(\hat{\beta})-l(0))} > \chi^2_{\frac{\alpha}{2},1}$.
+Si on ne peut pas obtenir $\hat{\beta}$, il faut utiliser le test du score.
+Supposons à partir de maintenant qu'on a obtient $\hat{\beta}$.
+Le résultat du test du ratio vraisemblance a un avantage par rapport aux deux autres tests
+qu'il est invariant contre les transformations monotones.
+Si l'invariance n'est pas nécessaire, alors le test de Wald est plus commun et plus facile à calculer.////
 
-Pour simplicité, écrire :
-
-\begin{equation*}
-    Y = 
-    \begin{bmatrix}
-        Y_1 \\
-        \vdots \\
-        Y_n
-    \end{bmatrix}; \tab[0.5cm]
-    X =
-    \begin{bmatrix}
-        1 & X^{(1)}_1 & X^{(1)}_2 \\
-        \vdots & \vdots & \vdots \\
-        1 & X^{(n)}_1 & X^{(n)}_2
-    \end{bmatrix}; \tab[0.5cm]
-    \beta =
-    \begin{bmatrix}
-        \beta_0 \\
-        \beta_1 \\
-        \beta_2
-    \end{bmatrix}; \tab[0.5cm]
-    S(X,Y,\beta) = (Y-X\beta)^T(Y-X\beta)
-\end{equation*}
-
-L'espace de paramètre est $\mathbb{R}^3$.
-Selon la définition d'éaquation d'estimation, il s'agit de trouver, pour chaque $i \in \{1, \cdots, n\}$,
-une fonction $\psi_i : \mathbb{R}^3 \times \mathbb{R}^3 \to \mathbb{R}^3$ telle que, pour 
-tout $\beta \in \mathbb{R}^3$, on a :
-
-\begin{equation*}
-    \mathbb{E} \squared{ \sum_{i=1}^n \psi_i((Y_i, X^{(i)}_1, X^{(i)}_2), \beta)} = 
-    \begin{bmatrix}
-        0 \\
-        0 \\
-        0 
-    \end{bmatrix}
-\end{equation*}
-
-On écrit $\hat{\beta}$ pour la solution de l'équation d'estimation, 
-qui est une variable aléatoire dépendant $Y$ et $X$, telle que 
-$\sum_{i=1}^n \psi_i((Y_i, X^{(i)}_1, X^{(i)}_2), \hat{\beta}) = 0$ presque partout.
-Selon la première hypothèse, la règle de décision est :
-
-\begin{equation*}
-    \hat{\beta} \in \argmin_{\beta \in \mathbb{R}^3} S(X,Y,\beta)
-\end{equation*}
-
-Donc on utilise :
-
-\begin{equation*}
-    \begin{split}
-    &\tab[0.4cm] \frac{\partial}{\partial \beta }S(X,Y,\beta) = -2X^T(Y-X\beta) = 
-    \sum_{i=1}^n
-    \begin{bmatrix}
-        (-2Y_i + 2\beta_0 + 2\beta_1 X^{(i)}_1 + 2\beta_2 X^{(i)}_2) \\
-        (-2Y_i X^{(i)}_1 + 2\beta_0 X^{(i)}_1 + 2\beta_1 (X^{(i)}_1)^2 + 2\beta_2 X^{(i)}_1 X^{(i)}_2) \\
-        (-2Y_i X^{(i)}_2 + 2\beta_0 X^{(i)}_2 + 2\beta_1 X^{(i)}_1 X^{(i)}_2 + 2\beta_2 (X^{(i)}_2)^2)
-    \end{bmatrix} \\ & =
-    \sum_{i=1}^n \psi_i((Y_i, X^{(i)}_1, X^{(i)}_2), \beta) =
-    \begin{bmatrix}
-        0 \\
-        0 \\
-        0
-    \end{bmatrix}
-    \end{split}
-\end{equation*}
-
-Comme :
-
-\begin{equation*}
-    \begin{split}
-    & \tab[0.4cm] \mathbb{E} [\psi_i((Y_i, X^{(i)}_1, X^{(i)}_2), \beta)] = 
-    \begin{bmatrix}
-        \mathbb{E} \squared{(-2Y_i + 2\beta_0 + 2\beta_1 X^{(i)}_1 + 2\beta_2 X^{(i)}_2)} \\
-        \mathbb{E} \squared{(-2Y_i X^{(i)}_1 + 2\beta_0 X^{(i)}_1 + 2\beta_1 (X^{(i)}_1)^2 + 2\beta_2 X^{(i)}_1 X^{(i)}_2)} \\
-        \mathbb{E} \squared{(-2Y_i X^{(i)}_2 + 2\beta_0 X^{(i)}_2 + 2\beta_1 X^{(i)}_1 X^{(i)}_2 + 2\beta_2 (X^{(i)}_2)^2)}
-    \end{bmatrix} \\ & =
-    \begin{bmatrix}
-        \mathbb{E} \squared{\mathbb{E} \squared{(-2Y_i + 2\beta_0 + 2\beta_1 X^{(i)}_1 + 2\beta_2 X^{(i)}_2) \mid X^{(i)}}} \\
-        \mathbb{E} \squared{X^{(i)}_1\mathbb{E} \squared{-2Y_i + 2\beta_0 + 2\beta_1 X^{(i)}_1 + 2\beta_2 X^{(i)}_2 \mid X^{(i)}}} \\
-        \mathbb{E} \squared{X^{(i)}_2\mathbb{E} \squared{-2Y_i + 2\beta_0 + 2\beta_1 X^{(i)}_1 + 2\beta_2 X^{(i)}_2 \mid X^{(i)}}}
-    \end{bmatrix} =
-    \begin{bmatrix}
-        0 \\
-        0 \\
-        0
-    \end{bmatrix}
-    \end{split}
-\end{equation*}
-
-On conclut que l'équation définie est une équation d'estimation. On a donc :
-
-\begin{equation*}
-    \hat{\beta} = (X^TX)^{-1}X^TY
-\end{equation*}
-
-L'inverse peut être un inverse généralisé si $X^TX$ n'est pas inversible.
-Selon la deuxième hypothèse, on sait immédiatement que $\text{Var}(\hat{\beta} \mid X) = \sigma^2 (X^TX)^{-1}$.
-Maintenant, il s'agit de réaliser tout utilisant le donnée \texttt{addhealth} avec $Y_i = \texttt{Weight}_i$,
-$X^{(i)}_1 = \texttt{age}_i$ et $X^{(i)}_2 = \texttt{SES}_i$.
-Ce travail ne consiste que l'utilisation de la fonction \texttt{lm} en R :
-
-\begin{lstlisting}
-    set.seed(1234)
-
-    donnee <- read.delim("Chapters\\biostat_projet_1\\resource_content_1_addhealth.txt", header = TRUE)
-    #donnee <- read.delim("resource_content_1_addhealth.txt", header = TRUE)
-    
-    attach(donnee)
-    
-    #On commence par le netoyage
-    donnee$feeling_depressed <- as.factor(donnee$feeling_depressed)
-    donnee$feeling_depressed[is.na(donnee$feeling_depressed)] <- as.factor(
-        floor(runif(sum(is.na(donnee$feeling_depressed)), min = 1, max = 4.9999)))
-    
-    donnee$smoking <- as.factor(donnee$smoking)
-    
-    donnee$weight <- as.numeric(donnee$weight)
-    donnee$weight[is.na(donnee$weight)] <- mean(donnee$weight, na.rm = TRUE)
-    
-    donnee$time <- as.factor(donnee$time) #identiquement 1
-    
-    donnee$age <- as.numeric(donnee$age)
-    donnee$age[is.na(donnee$age)] <- as.factor(mean(donnee$age, na.rm = TRUE))
-    
-    donnee$sex <- as.factor(donnee$sex)
-    donnee$sex[is.na(donnee$sex)] <- as.factor(floor(runif(sum(is.na(donnee$sex)), min = 1, max = 2.9999)))
-    
-    donnee$SES <- as.numeric(donnee$SES)
-    donnee$SES[is.na(donnee$SES)] <- as.numeric(floor(mean(donnee$SES, na.rm = TRUE)))
-    
-    attach(donnee)
-    
-    modele_moindre_carre <- lm(weight ~ SES + age, data = donnee)
-    print(summary(modele_moindre_carre))
-\end{lstlisting}
-
-Le code donne que, selon les donné, on a $\beta_0 = 59.5309$, $\beta_1 = 5.5819$ et $\beta_2 = -0.3637$.
-Les variances sont respectivement $3.7017^2 = 13.70258289 $, $0.2223^2 = 0.04941729$ et $0.2149^2 = 0.4618201$.
-Le calcul et la démonstration sont complets. ////
 \end{CJK*}
 \end{document}
