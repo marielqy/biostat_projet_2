@@ -46,7 +46,6 @@ p <- ggplot(data.frame(t = t, q = q), aes(x = t, y = q)) +
 show(p)
 
 #3d
-
 debut <- 200
 fin <- 260
 
