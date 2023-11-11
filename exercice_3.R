@@ -1,10 +1,7 @@
 library(survival)
-
 donnee <- read.delim("Chapters\\biostat_projet_2\\datasurv.txt", header = TRUE, sep = " ")
 #donnee <- read.delim("datasurv.txt", header = TRUE)
-
 attach(donnee)
-print(donnee)
 
 #3a
 #surv_objet <- Surv(time_days, event)
