@@ -3,34 +3,8 @@
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
 \section*{Exercice 3}
-On s’intéresse à l’ensemble de variables suivantes: \texttt{age}, \texttt{sex}, \texttt{SES}, \texttt{smoking} et
-\texttt{weight}, notant que les variables \texttt{ID} et \texttt{time discrete} représentent respectivement l’identifiant
-de l’individu et le temps (il y a quatre temps: vague 1, 2, 3 ou 4) dans le jeu de données \texttt{addhealth long}.
-
-Proposez une structure de corrélations entre les mesures de poids de chaque individu.
-Ensuite, réalisez et comparez les trois modèles suivants utilisant la corrélation résiduelle :
-
-\begin{enumerate}
-    \item Un modèle de régression linéaire pour la variable dépendente \texttt{weight} sans aucune variable explicative,
-    c'est-à-dire just une ordonnée à l'origine.
-    \item Un modèle de régression linéaire pour la variable dépendente \texttt{weight} et les variables explicatives
-    \texttt{age} et \texttt{sex}.
-    \item Un modèle de régression linéaire pour la variable dépendente \texttt{weight} et les variables explicatives
-    \texttt{age}, \texttt{sex}, \texttt{SES} et \texttt{smoking}.
-\end{enumerate}
-
-Finalement, afin d'étudier la rélation entre la variable dépendent \texttt{weight} et la variable explicative \texttt{SES},
-on propose quatre modèles suivants:
-
-\begin{enumerate}
-    \item Un modèle linéaire en assumant l'indépendance entre toutes les observations.
-    \item Un modèle linéaire généralisé (normale) où on assume une matrice de corrélation interchangeable.
-    \item GEE avec une matrice de corrélation interchangeable.
-    \item Un modèle mixte avec une ordonnée à l'origine et une pente aléatoire pour chaque individu.
-\end{enumerate}
-
-Comparez les quatre modèles utilisant la variance de la coefficient de la variable continue \texttt{SES},
-pour laquelle faisez un intervalle de confiance.
+Pour le jeu de données 
+\texttt{datasurv.txt}, NOTATION
 
 \paragraph{Solution}
 
