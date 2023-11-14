@@ -1,13 +1,22 @@
 library(survival)
 data(diabetic)
 attach(diabetic)
-
 trt <- as.factor(trt)
 
 # 1a
 print(names(diabetic))
 #"id"     "laser"  "age"    "eye"    "trt"    "risk"   "time"   "status"
 #https://www.mayo.edu/research/documents/diabeteshtml/DOC-10027460/
+#ID：Il est utilisé pour distinguer chaque participant dans l'ensemble de données.
+#laser：Il s'agit du type de traitement laser reçu. 1=xenon, 2=argon
+#age: Il s'agit de l'âge auquel le diabète a été diagnostiqué chez le patient.
+#eye: Il s'agit d'un facteur avec des niveau de gauche et de droit.
+#trt: Il s'agit du group de traitement.0=no treatment,1=laser
+#risk: Il s'agit d'une variable quantitative d'évaluation du risque utilisée pour classer les participants dans différents groupes de risque(les valeurs varient de 6 à 12).
+#time: Il s'agit de la date de l'événement ou de la dernière visite de suivi.
+#status:Il s'agit d'une variable binaire utilisée pour indiquer si une perte de vision s'est produite au cours de la période d'étude,où 0 indique qu'aucune perte de vision ne s'est produite à la fin
+de la période d'observation et 1 indique qu'une perte de vision s'est produite.
+#还需要再归纳一下这个实验来自哪个研究
 
 #1bc
 #Kaplan-Meier 
