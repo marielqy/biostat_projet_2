@@ -35,7 +35,10 @@ legend("topright", legend=c("totale","trt = 0", "trt = 1"), col=c("black","red",
 #1d
 #On concentre sur les patients trt = 0
 #diabetic_controle <- diabetic[trt == 0,]
-print(result.kmtrt0) #mediane = 43.7
+subset_data <- subset(diabetic,trt == 0)
+fit <- survfit(Surv(time,status) ~ 1,data=subset_data, conf.type="log-log")
+result.km<-fit
+print(result.km)
 
 #1e test de log-rank
 result.logrank <- survdiff(Surv(time, status) ~ trt, data = diabetic)
