@@ -39,13 +39,26 @@ subset_data <- subset(diabetic,trt == 0)
 fit <- survfit(Surv(time,status) ~ 1,data=subset_data, conf.type="log-log")
 result.km<-fit
 print(result.km)
+#Le délai médian jusqu'à la cécité pour les patients qui n'ont pas reçu de traitement au laser était de 43,7 mois. 
+#L'intervalle de confiance à 95 % pour cette estimation était large, allant de 31,6 à 59,8 mois.
 
-#1e test de log-rank
+ #1e test de log-rank
 result.logrank <- survdiff(Surv(time, status) ~ trt, data = diabetic)
 print(result.logrank)
 #Les résultats du test du chi-carré (Chisq=22,2, p=2e-06), dans lequel nous pouvons voir que la valeur p est bien inférieure à 0,05. 
 #Cela suggère que la différence de temps avant la cécité entre les deux groupes de traitement est statistiquement significative. 
 #En outre, dans ce cas, le nombre de cécités était significativement plus élevé que prévu dans le groupe qui n'a pas reçu de traitement au laser (trt=0), tandis que le nombre de cécités était plus faible que prévu dans le groupe qui a reçu un traitement au laser (trt=1).
 #En conclusion, les résultats du test Log-Rank ont montré que le fait de recevoir ou non un traitement au laser avait un effet significatif sur la courbe de survie des patients. Cela implique que le traitement au laser peut être une intervention efficace pour retarder la perte de vision chez les patients diabétiques.
- #1f
-plot(
+
+ #1f# 计算年龄的中位数，并创建年龄组变量
+median_age <- median(diabetic$age, na.rm = TRUE)
+diabetic$age_group <- ifelse(diabetic$age <= median_age, "younger", "older")
+# 使用survfit函数根据年龄组计算Kaplan-Meier生存曲线
+result.kmage <- survfit(Surv(time, status) ~ age_group, data = diabetic)
+# 绘制Kaplan-Meier生存曲线
+plot(result.kmage, main = 'Courbe de Kaplan-Meier', xlab = 'Temps en jours', ylab = 'Probabilite de survie', col = c("red", "blue"))
+# 进行分层的Log-Rank测试
+survdiff(Surv(time, status) ~ trt + strata(age), data = diabetic)
+#Dans notre analyse approfondie de l'ensemble de données sur les diabetic, 
+#nous avons adopté une stratégie basée sur la segmentation de l'âge médian afin de discerner l'effet des différents traitements sur les patients d'âges différents. 
+#Cette segmentation a permis de classer les patients en deux groupes, “Younger“et “Older”, ce qui nous a permis d'explorer l'impact potentiel du facteur âge sur les résultats du traitement.
