@@ -43,3 +43,9 @@ print(result.km)
 #1e test de log-rank
 result.logrank <- survdiff(Surv(time, status) ~ trt, data = diabetic)
 print(result.logrank)
+#Les résultats du test du chi-carré (Chisq=22,2, p=2e-06), dans lequel nous pouvons voir que la valeur p est bien inférieure à 0,05. 
+#Cela suggère que la différence de temps avant la cécité entre les deux groupes de traitement est statistiquement significative. 
+#En outre, dans ce cas, le nombre de cécités était significativement plus élevé que prévu dans le groupe qui n'a pas reçu de traitement au laser (trt=0), tandis que le nombre de cécités était plus faible que prévu dans le groupe qui a reçu un traitement au laser (trt=1).
+#En conclusion, les résultats du test Log-Rank ont montré que le fait de recevoir ou non un traitement au laser avait un effet significatif sur la courbe de survie des patients. Cela implique que le traitement au laser peut être une intervention efficace pour retarder la perte de vision chez les patients diabétiques.
+ #1f
+plot(
