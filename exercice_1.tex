@@ -20,8 +20,19 @@ et/ou d'arguments adaptés au contexte de l'étude, discuter de laquelle des var
 données risque d'agir comme facteur confondant, et reproduire le test du Log-Rank stratifié pour cette variable.
 
 \paragraph{Solution}
+\section{a}
+\begin{itemize}
+  \item \textbf{ID} : Il est utilisé pour distinguer chaque participant dans l'ensemble de données.
+  \item \textbf{laser} : Il s'agit du type de traitement laser reçu. 1=xenon, 2=argon
+  \item \textbf{age} : Il s'agit de l'âge auquel le diabète a été diagnostiqué chez le patient.
+  \item \textbf{eye} : Il s'agit d'un facteur avec des niveaux de gauche et de droit.
+  \item \textbf{trt} : Il s'agit du groupe de traitement. 0=no treatment, 1=laser
+  \item \textbf{risk} : Il s'agit d'une variable quantitative d'évaluation du risque utilisée pour classer les participants dans différents groupes de risque (les valeurs varient de 6 à 12).
+  \item \textbf{time} : Il s'agit de la date de l'événement ou de la dernière visite de suivi.
+  \item \textbf{status} : Il s'agit d'une variable binaire utilisée pour indiquer si une perte de vision s'est produite au cours de la période d'étude, où 0 indique qu'aucune perte de vision ne s'est produite à la fin de la période d'observation et 1 indique qu'une perte de vision s'est produite.
+\end{itemize}
 
-à faire
+Ces données proviennent d'une étude d'analyse de la survie de patients atteints de rétinopathie diabétique à haut risque, conçue pour évaluer l'efficacité du traitement au laser dans le ralentissement de la progression de la cécité.
 
 \begin{lstlisting}
 quelque listing
