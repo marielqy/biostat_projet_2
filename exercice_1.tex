@@ -2,25 +2,14 @@
 
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
-\section*{Exercice 1}
+
+\section*{Exercice 1a}
 Décrivez brièvement les variables du jeu de données 
 \texttt{diabetic} dans la bibliothèque \texttt{survival} en R.
 Quelle était une question de recherche menant à cette collecte de données?
-Produisez un graphique de Kaplan-Meier utilisant l'échantillon entier,
-le groupe de \texttt{trt = 0} et le groupe de \texttt{trt = 1} 
-pour le temps jusqu'à devenir aveugle.
-Pour le groupe \texttt{trt = 0}, trouvez le temps médian de survie et
-construisez un intervalle de confiance à $95\%$ pour le temps médian de survie.
-Faites un test de Log-Rang pour comparer les deux groupes.
-
-Finalement, on se demande si d'autres variables
-dans le jeu de données pourraient être des facteurs confondants, et si l'on devrait stratifier le
-test du Log-Rang sur l'une de ces variables. À partir de statistiques descriptives, de graphiques
-et/ou d'arguments adaptés au contexte de l'étude, discuter de laquelle des variables du jeu de
-données risque d'agir comme facteur confondant, et reproduire le test du Log-Rank stratifié pour cette variable.
 
 \paragraph{Solution}
-\section{a}
+
 \begin{itemize}
   \item \textbf{ID} : Il est utilisé pour distinguer chaque participant dans l'ensemble de données.
   \item \textbf{laser} : Il s'agit du type de traitement laser reçu. 1=xenon, 2=argon
@@ -34,7 +23,14 @@ données risque d'agir comme facteur confondant, et reproduire le test du Log-Ra
 
 Ces données proviennent d'une étude d'analyse de la survie de patients atteints de rétinopathie diabétique à haut risque, conçue pour évaluer l'efficacité du traitement au laser dans le ralentissement de la progression de la cécité.
 
-\section{b}
+\section*{Exercice 1bc}
+Quelle était une question de recherche menant à cette collecte de données?
+Produisez un graphique de Kaplan-Meier utilisant l'échantillon entier,
+le groupe de \texttt{trt = 0} et le groupe de \texttt{trt = 1} 
+pour le temps jusqu'à devenir aveugle.
+
+\paragraph{Solution}\
+
 Nous avons obtenu un graphique montrant la probabilité de survie pour l'ensemble de l'échantillon depuis le début du traitement jusqu'à la cécité (définie comme une baisse de l'acuité visuelle à 5/200). La courbe commence à 1 (soit une probabilité de survie de 100 %) et diminue progressivement avec le temps, ce qui suggère que de plus en plus de patients atteignent la définition de la cécité au fil du temps. Sur l'axe des abscisses, le temps est indiqué en jours, tandis que l'axe des ordonnées montre la proportion de patients qui n'ont pas connu d'épisode de cécité à un moment donné.
 
 \begin{lstlisting}
@@ -44,7 +40,7 @@ plot(result.km, xlab = "Jours", ylab = "Probabilité de Survie", main = "Kaplan-
 
 \end{lstlisting}
 
-\section{c}
+
 Le graphique généré par le code r comporte trois courbes qui représentent la probabilité de survie de l'échantillon entier (représenté en noir), du groupe non traité (représenté en rouge, trt = 0) et du groupe traité (représenté en bleu, trt = 1). Les graphiques montrent que la courbe de survie du groupe traité est plus élevée que celle du groupe non traité à la plupart des moments, ce qui suggère que le traitement peut aider à retarder l'apparition de la cécité.
 
 \begin{lstlisting}
@@ -58,7 +54,11 @@ legend("topright", legend=c("totale","trt = 0", "trt = 1"), col=c("black","red",
 #abline ( v = 43.7 , col = 'red' , lty =2)
 \end{lstlisting}
 
-\section{d}
+\section*{Exercice 1d}
+Pour le groupe \texttt{trt = 0}, trouvez le temps médian de survie et
+construisez un intervalle de confiance à $95\%$ pour le temps médian de survie.
+
+\paragraph{Solution}\
 
 Le but de ce problème est de se concentrer sur le groupe de patients qui n'ont pas reçu de traitement au laser (i.e., trt = 0) et de trouver le temps de survie médian dans ce sous-ensemble, qui est défini ici comme le temps écoulé entre le début du traitement et la cécité. Nous devons ensuite calculer un intervalle de confiance à 95\% pour ce temps de survie médian, et nous avons choisi d'utiliser la méthode "log-log" fournie par Barker (2009).
 
@@ -82,7 +82,11 @@ Call: survfit(formula = Surv(time, status) ~ 1, data = subset_data,
 [1,] 197    101   43.7    31.6    59.8
 \end{lstlisting}
 
-\section{e}
+\section*{Exercice 1e}
+Faites un test de Log-Rang pour comparer les deux groupes.
+
+\paragraph{Solution}\
+
 Les résultats du test du chi-carré (Chisq=22,2, p=2e-06), dans lequel nous pouvons voir que la valeur p est bien inférieure à 0,05. Cela suggère que la différence de temps avant la cécité entre les deux groupes de traitement est statistiquement significative. En outre, dans ce cas, le nombre de cécités était significativement plus élevé que prévu dans le groupe qui n'a pas reçu de traitement au laser (trt=0), tandis que le nombre de cécités était plus faible que prévu dans le groupe qui a reçu un traitement au laser (trt=1).
 
 En conclusion, les résultats du test Log-Rank ont montré que le fait de recevoir ou non un traitement au laser avait un effet significatif sur la courbe de survie des patients. Cela implique que le traitement au laser peut être une intervention efficace pour retarder la perte de vision chez les patients diabétiques.
@@ -103,7 +107,15 @@ trt=1      22.2
  Chisq= 22.2  on 1 degrees of freedom, p= 2e-06 
 \end{lstlisting}
 
-\section{f}
+\section*{Exercice 1f}
+Finalement, on se demande si d'autres variables
+dans le jeu de données pourraient être des facteurs confondants, et si l'on devrait stratifier le
+test du Log-Rang sur l'une de ces variables. À partir de statistiques descriptives, de graphiques
+et/ou d'arguments adaptés au contexte de l'étude, discuter de laquelle des variables du jeu de
+données risque d'agir comme facteur confondant, et reproduire le test du Log-Rank stratifié pour cette variable.
+
+\paragraph{Solution}\
+
 Dans notre analyse approfondie de l'ensemble de données sur les diabetic, nous avons adopté une stratégie basée sur la segmentation de l'âge médian afin de discerner l'effet des différents traitements sur les patients d'âges différents. Cette segmentation a permis de classer les patients en deux groupes, “Younger“et “Older”, ce qui nous a permis d'explorer l'impact potentiel du facteur âge sur les résultats du traitement.
 
 On a ensuite tracé les courbes de survie à l'aide de la fonction plot, en utilisant le rouge pour représenter le groupe des “Younger“et le bleu pour représenter le groupe des “Older“. Le graphique montre que la courbe rouge est plus élevée que la courbe bleue à la plupart des moments, ce qui signifie que la probabilité de survie est plus élevée pour le groupe des ”Younger“ que pour le groupe des”Older“. 
