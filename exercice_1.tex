@@ -45,7 +45,42 @@ plot(result.km, xlab = "Jours", ylab = "Probabilité de Survie", main = "Kaplan-
 \end{lstlisting}
 
 \section{c}
+Le graphique généré par le code r comporte trois courbes qui représentent la probabilité de survie de l'échantillon entier (représenté en noir), du groupe non traité (représenté en rouge, trt = 0) et du groupe traité (représenté en bleu, trt = 1). Les graphiques montrent que la courbe de survie du groupe traité est plus élevée que celle du groupe non traité à la plupart des moments, ce qui suggère que le traitement peut aider à retarder l'apparition de la cécité.
 
+\begin{lstlisting}
+result.kmtrt0 <- survfit(Surv(time[trt == 0], status[trt == 0]) ~ 1, conf.type="log-log")
+par(new=TRUE)
+plot(result.kmtrt0, xlab = "Jours", ylab = "Probabilité de Survie", main = "Kaplan-Meier", col = "red")
+result.kmtrt1 <- survfit(Surv(time[trt == 1], status[trt == 1]) ~ 1, conf.type="log-log")
+par(new=TRUE)
+plot(result.kmtrt1, xlab = "Jours", ylab = "Probabilité de Survie", main = "Kaplan-Meier", col = "blue")
+legend("topright", legend=c("totale","trt = 0", "trt = 1"), col=c("black","red", "blue"), lty=1:5, cex=0.8)
+#abline ( v = 43.7 , col = 'red' , lty =2)
+\end{lstlisting}
+
+\section{d}
+
+Le but de ce problème est de se concentrer sur le groupe de patients qui n'ont pas reçu de traitement au laser (i.e., trt = 0) et de trouver le temps de survie médian dans ce sous-ensemble, qui est défini ici comme le temps écoulé entre le début du traitement et la cécité. Nous devons ensuite calculer un intervalle de confiance à 95\% pour ce temps de survie médian, et nous avons choisi d'utiliser la méthode "log-log" fournie par Barker (2009).
+
+Le code R crée d'abord un sous-ensemble des données \texttt{subsetdata} en filtrant les patients avec \texttt{trt == 0}de l'ensemble de données \texttt{diabetic} à l'aide de la fonction subset. Ensuite, nous avons utilisé la fonction \texttt{survfit} pour estimer la durée de survie médiane de ce sous-ensemble et l'intervalle de confiance à 95\% correspondant, où nous avons choisi le type d'intervalle de confiance "log-log".
+
+Selon les résultats obtenus :
+\begin{enumerate}
+  \item Chez les patients n'ayant pas reçu de traitement (\texttt{trt = 0}), la durée médiane de survie est de 43,7 jours.
+  \item L'intervalle de confiance à 95\% a une limite inférieure de 31,6 jours et une limite supérieure de 59,8 jours.
+\end{enumerate}
+
+\begin{lstlisting}
+subset_data <- subset(diabetic,trt == 0)
+fit <- survfit(Surv(time,status) ~ 1,data=subset_data, conf.type="log-log")
+result.km<-fit
+print(result.km)
+Call: survfit(formula = Surv(time, status) ~ 1, data = subset_data, 
+    conf.type = "log-log")
+
+       n events median 0.95LCL 0.95UCL
+[1,] 197    101   43.7    31.6    59.8
+\end{lstlisting}
 
 \end{CJK*}
 \end{document}
