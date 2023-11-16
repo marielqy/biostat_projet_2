@@ -2,7 +2,7 @@
 
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
-\section*{Exercice 2ab}
+\section*{Exercice 2a}
 Pour le jeu de données 
 \texttt{rotterdam} dans la bibliothèque \texttt{survival} en R, 
 on s'intéresse par l'association entre les variables explicatives \texttt{age}, \texttt{meno}, 
@@ -10,11 +10,76 @@ on s'intéresse par l'association entre les variables explicatives \texttt{age},
 et la variable de réponse le temps jusqu'à une récidive du cancer au sein.
 Ajustez un modèle de Cox pour cela et rapporter 
 les rapports de risque pour toutes les variables explicatives avec leurs intervalles de confiance (à $95\%$ ?).
+
+\paragraph{Solution}\
+
+L'ensemble des données comprenait 2982 patientes avec 1518 événements (récidive du cancer du sein). La cohérence (concordance) du modèle était de 0,678, ce qui signifie que la précision de la prédiction du modèle était modérée.
+
+Les résultats suivants montrent l'effet de chaque variable sur le risque de récidive, exprimé en hazard ratio :
+\begin{itemize}
+  \item \textbf{Âge (age)} : le hazard ratio était de 0,9859, indiquant une diminution légère (environ 1,4\%) du risque de récidive pour chaque année d'âge supplémentaire. Cet effet est significatif (valeur \( p < 0,05 \)).Intervalle de confiance à 95 % 0,9792 à 0,9927.
+  \item \textbf{Statut ménopausique (meno)} : le hazard ratio est de 1,1969, signifiant que les patientes ménopausées ont un risque de récidive environ 20\% plus élevé que les patientes non ménopausées. Cet effet est également significatif (valeur \( p < 0,05 \)).L'intervalle de confiance à 95 % était compris entre 1,0069 et 1,4228.
+  \item \textbf{Taille de la tumeur (taille 20-50 et taille >50)} : des tumeurs plus grandes (20-50 mm et >50 mm) ont été associées à un risque accru de récidive, avec des hazard ratios de 1,4462 et 1,8996 respectivement. Les intervalles de confiance sont respectivement de 1,2909 à 1,6202 et de 1,5988 à 2,2571.Ces effets sont significatifs (valeur \( p < 0,05 \)).Cela suggère que plus la tumeur est importante, plus son impact sur le risque de récidive est grand, et que cet impact est relativement certain.
+  \item \textbf{Grade pathologique (grade)} : le hazard ratio était de 1,4413, indiquant que les tumeurs de grade supérieur sont associées à un risque plus élevé de récidive. Cet effet est aussi significatif (valeur \( p < 0,05 \)).L'intervalle de confiance à 95 % est compris entre 1,2703 et 1,6353.
+  \item \textbf{Nombre de ganglions lymphatiques atteints (nodes)} : le hazard ratio était de 1,0802, chaque ganglion supplémentaire atteint augmentant le risque de récidive d'environ 8\%. Cet effet est hautement significatif (valeur \( p < 0,001 \)).L'intervalle de confiance à 95 % est compris entre 1,0706 et 1,0900.
+  \item \textbf{Chimiothérapie (chemo)} : le hazard ratio était de 0,8902, indiquant un risque légèrement plus faible de récidive chez les patients recevant une chimiothérapie. Toutefois, cette différence n'était pas statistiquement significative (valeur \( p = 0,0993 \)).L'intervalle de confiance à 95 % est compris entre 0,7751 et 1,0222.
+
+\end{itemize}
+
+Ces résultats suggèrent que l'âge, le statut ménopausique, la taille de la tumeur, le classement pathologique et le nombre de ganglions lymphatiques atteints sont des facteurs prédictifs importants de la récidive du cancer du sein
+
+\begin{lstlisting}
+#ex2
+library(survival)
+data(rotterdam)
+attach(rotterdam)
+#2a
+resultat.cox <- coxph(Surv(rtime, recur) ~ age + meno + size + grade + nodes + chemo, data = rotterdam)
+print(summary(resultat.cox))
+Call:
+coxph(formula = Surv(rtime, recur) ~ age + meno + size + grade + 
+    nodes + chemo, data = rotterdam)
+
+  n= 2982, number of events= 1518 
+
+               coef exp(coef)  se(coef)      z Pr(>|z|)    
+age       -0.014194  0.985906  0.003481 -4.077 4.56e-05 ***
+meno       0.179756  1.196925  0.088210  2.038   0.0416 *  
+size20-50  0.368943  1.446205  0.057965  6.365 1.95e-10 ***
+size>50    0.641656  1.899624  0.087968  7.294 3.00e-13 ***
+grade      0.365566  1.441329  0.064432  5.674 1.40e-08 ***
+nodes      0.077162  1.080217  0.004580 16.847  < 2e-16 ***
+chemo     -0.116355  0.890159  0.070594 -1.648   0.0993 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+          exp(coef) exp(-coef) lower .95 upper .95
+age          0.9859     1.0143    0.9792    0.9927
+meno         1.1969     0.8355    1.0069    1.4228
+size20-50    1.4462     0.6915    1.2909    1.6202
+size>50      1.8996     0.5264    1.5988    2.2571
+grade        1.4413     0.6938    1.2703    1.6353
+nodes        1.0802     0.9257    1.0706    1.0900
+chemo        0.8902     1.1234    0.7751    1.0222
+
+Concordance= 0.678  (se = 0.007 )
+Likelihood ratio test= 468.6  on 7 df,   p=<2e-16
+Wald test            = 589.9  on 7 df,   p=<2e-16
+Score (logrank) test = 647.9  on 7 df,   p=<2e-16
+
+\end{lstlisting}
+
+\section*{Exercice 2b}
 Nommez l'hypothèse importante du modèle de Cox. 
 Expliquez sans le faire comment on peut vérifier cette hypothèse.
 
-\paragraph{Solution}
+\paragraph{Solution}\
 
-à faire
+H_0: \text{Les rapports de risque de toutes les variables explicatives sont indépendants du temps, signifiant que l'hypothèse des risques proportionnels est valide.}
+H_1: \text{Le rapport de risque d'au moins une variable explicative varie avec le temps, indiquant que l'hypothèse des risques proportionnels n'est pas valide.}
+
+
+
+
 \end{CJK*}
 \end{document}
