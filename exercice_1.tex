@@ -34,10 +34,18 @@ données risque d'agir comme facteur confondant, et reproduire le test du Log-Ra
 
 Ces données proviennent d'une étude d'analyse de la survie de patients atteints de rétinopathie diabétique à haut risque, conçue pour évaluer l'efficacité du traitement au laser dans le ralentissement de la progression de la cécité.
 
+\section{b}
+Nous avons obtenu un graphique montrant la probabilité de survie pour l'ensemble de l'échantillon depuis le début du traitement jusqu'à la cécité (définie comme une baisse de l'acuité visuelle à 5/200). La courbe commence à 1 (soit une probabilité de survie de 100 %) et diminue progressivement avec le temps, ce qui suggère que de plus en plus de patients atteignent la définition de la cécité au fil du temps. Sur l'axe des abscisses, le temps est indiqué en jours, tandis que l'axe des ordonnées montre la proportion de patients qui n'ont pas connu d'épisode de cécité à un moment donné.
+
 \begin{lstlisting}
-quelque listing
+#Kaplan-Meier 
+result.km <- survfit(Surv(time, status) ~ 1, conf.type="log-log")
+plot(result.km, xlab = "Jours", ylab = "Probabilité de Survie", main = "Kaplan-Meier")
 
 \end{lstlisting}
+
+\section{c}
+
 
 \end{CJK*}
 \end{document}
