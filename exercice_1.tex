@@ -82,5 +82,50 @@ Call: survfit(formula = Surv(time, status) ~ 1, data = subset_data,
 [1,] 197    101   43.7    31.6    59.8
 \end{lstlisting}
 
+\section{e}
+Les résultats du test du chi-carré (Chisq=22,2, p=2e-06), dans lequel nous pouvons voir que la valeur p est bien inférieure à 0,05. Cela suggère que la différence de temps avant la cécité entre les deux groupes de traitement est statistiquement significative. En outre, dans ce cas, le nombre de cécités était significativement plus élevé que prévu dans le groupe qui n'a pas reçu de traitement au laser (trt=0), tandis que le nombre de cécités était plus faible que prévu dans le groupe qui a reçu un traitement au laser (trt=1).
+
+En conclusion, les résultats du test Log-Rank ont montré que le fait de recevoir ou non un traitement au laser avait un effet significatif sur la courbe de survie des patients. Cela implique que le traitement au laser peut être une intervention efficace pour retarder la perte de vision chez les patients diabétiques.
+
+\begin{lstlisting}
+result.logrank <- survdiff(Surv(time, status) ~ trt, data = diabetic)
+print(result.logrank)
+Call:
+survdiff(formula = Surv(time, status) ~ trt, data = diabetic)
+
+        N Observed Expected (O-E)^2/E
+trt=0 197      101     71.8      11.9
+trt=1 197       54     83.2      10.3
+      (O-E)^2/V
+trt=0      22.2
+trt=1      22.2
+
+ Chisq= 22.2  on 1 degrees of freedom, p= 2e-06 
+\end{lstlisting}
+
+\section{f}
+Dans notre analyse approfondie de l'ensemble de données sur les diabetic, nous avons adopté une stratégie basée sur la segmentation de l'âge médian afin de discerner l'effet des différents traitements sur les patients d'âges différents. Cette segmentation a permis de classer les patients en deux groupes, “Younger“et “Older”, ce qui nous a permis d'explorer l'impact potentiel du facteur âge sur les résultats du traitement.
+
+On a ensuite tracé les courbes de survie à l'aide de la fonction plot, en utilisant le rouge pour représenter le groupe des “Younger“et le bleu pour représenter le groupe des “Older“. Le graphique montre que la courbe rouge est plus élevée que la courbe bleue à la plupart des moments, ce qui signifie que la probabilité de survie est plus élevée pour le groupe des ”Younger“ que pour le groupe des”Older“. 
+
+On a ensuite effectué des tests de Log-Rank stratifiés pour comparer les différences de durée de survie entre les groupes de traitement après prise en compte des facteurs liés à l'âge.Les résultats ont montré une valeur p extrêmement faible (1e-06) indiquant une différence significative dans le délai de cécité entre les deux groupes de traitement. Même après stratification par âge, il existe toujours une différence significative dans le risque de cécité entre le groupe de traitement 1 et le groupe de trt=0. Nous pouvons conclure que les patients du groupe de trt=1 ont une probabilité de cécité plus faible que les patients du groupe de traitement 0. En outre, le facteur âge joue un rôle dans cette différence : le groupe de patients “Younger”présente une probabilité de cécité plus faible que le groupe de patients “Older”. Cela suggère que l'âge est un facteur important influençant la durée de la cécité et qu'il doit être pris en compte lors de l'élaboration des stratégies de traitement.
+\begin{lstlisting}
+median_age <- median(diabetic$age, na.rm = TRUE)
+diabetic$age_group <- ifelse(diabetic$age <= median_age, "younger", "older")
+result.kmage <- survfit(Surv(time, status) ~ age_group, data = diabetic)
+plot(result.kmage, main = 'Courbe de Kaplan-Meier', xlab = 'Temps en jours', ylab = 'Probabilite de survie', col = c("red", "blue"))
+survdiff(Surv(time, status) ~ trt + strata(age), data = diabetic)
+
+Call:
+survdiff(formula = Surv(time, status) ~ trt + strata(age), data = diabetic)
+
+        N Observed Expected (O-E)^2/E (O-E)^2/V
+trt=0 197      101     71.9      11.8      23.4
+trt=1 197       54     83.1      10.2      23.4
+
+ Chisq= 23.4  on 1 degrees of freedom, p= 1e-06
+\end{lstlisting}
+
+
 \end{CJK*}
 \end{document}
